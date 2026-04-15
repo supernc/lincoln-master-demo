@@ -52,13 +52,15 @@ const AppointmentList: React.FC = () => {
         const newItem: Appointment = {
           id: `AP${genId()}`, ...values, appointmentTime: time,
           status: 'pending', createdAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
-          wechatNotified: false,
+          wechatNotified: true,
         };
         const updated = addItem('appointments', newItem, defaultAppointments);
         setDataState([...updated]);
         addAppointmentTodo(newItem.id, values.customerName, values.advisor, values.type);
         message.success('预约创建成功');
-        notification.success({ message: '企微提醒已发送', description: `已通过企微向 ${values.customerName} 发送预约确认消息`, icon: <WechatOutlined style={{ color: '#52c41a' }} />, duration: 5, placement: 'topRight' });
+        setTimeout(() => {
+          notification.success({ message: '企微提醒已发送', description: `已通过企微向 ${values.customerName} 发送预约确认消息`, icon: <WechatOutlined style={{ color: '#52c41a' }} />, duration: 5, placement: 'topRight' });
+        }, 800);
       }
       setModalOpen(false); setEditing(null); form.resetFields();
       actionRef.current?.reload();
@@ -66,12 +68,16 @@ const AppointmentList: React.FC = () => {
   };
 
   const handleStatusChange = (record: Appointment, newStatus: string) => {
-    const updated = updateItem<Appointment>('appointments', record.id, { status: newStatus as Appointment['status'] }, defaultAppointments);
+    const updates: Partial<Appointment> = { status: newStatus as Appointment['status'] };
+    if (newStatus === 'confirmed') updates.wechatNotified = true;
+    const updated = updateItem<Appointment>('appointments', record.id, updates, defaultAppointments);
     setDataState([...updated]);
     message.success(`预约状态已更新为：${statusMap[newStatus]?.text}`);
     actionRef.current?.reload();
     if (newStatus === 'confirmed') {
-      notification.info({ message: '企微提醒', description: `已向 ${record.customerName} 发送到店指引和预约确认`, icon: <WechatOutlined style={{ color: '#52c41a' }} />, duration: 5, placement: 'topRight' });
+      setTimeout(() => {
+        notification.info({ message: '企微提醒已发送', description: `已向 ${record.customerName} 发送到店指引和预约确认`, icon: <WechatOutlined style={{ color: '#52c41a' }} />, duration: 5, placement: 'topRight' });
+      }, 800);
     }
   };
 
