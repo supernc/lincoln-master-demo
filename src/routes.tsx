@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter, Routes, Route, Navigate } from 'react-router-dom';
 import BasicLayout from './layouts/BasicLayout';
 import Login from './pages/login/Login';
 import LeadList from './pages/leads/LeadList';
@@ -18,7 +18,7 @@ import AccidentList from './pages/after-sales/accidents/AccidentList';
 import AfterSalesCustomers from './pages/after-sales/customers/AfterSalesCustomers';
 
 const AppRoutes: React.FC = () => (
-  <BrowserRouter>
+  <HashRouter>
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/" element={<BasicLayout />}>
@@ -39,7 +39,7 @@ const AppRoutes: React.FC = () => (
         <Route path="after-sales/customers" element={<AfterSalesCustomers />} />
       </Route>
     </Routes>
-  </BrowserRouter>
+  </HashRouter>
 );
 
 export default AppRoutes;
